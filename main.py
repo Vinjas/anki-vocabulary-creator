@@ -1,65 +1,70 @@
 import sys
+from pathlib import Path
 
-from utils.file_parser import (
-    encontrar_archivos_txt,
-    procesar_archivo, 
-)
+from utils.input_processor import find_input_files, process_input_file
+
+
+def get_input_files(arguments):
+    if arguments:
+        return [Path(argument).expanduser() for argument in arguments]
+    return find_input_files()
+
 
 def main():
-    """Función principal del script"""
+    """Run the Anki deck generator."""
     print("=" * 70)
-    print("🎴 GENERADOR AUTOMÁTICO DE DECKS ANKI - ALEMÁN")
+    print("🎴 AUTOMATIC GERMAN ANKI DECK GENERATOR")
     print("=" * 70)
     print()
 
-    print("🔍 Buscando archivos .txt en la carpeta actual...")
-    archivos_txt = encontrar_archivos_txt()
-    
-    if not archivos_txt:
-        print("❌ No se encontraron archivos .txt para procesar")
+    print("🔍 Looking for .txt and .csv files...")
+    input_files = get_input_files(sys.argv[1:])
+
+    if not input_files:
+        print("❌ No .txt or .csv files were found")
         print()
-        print("💡 Instrucciones:")
-        print("   1. Crea un archivo .txt con tus palabras (una por línea)")
-        print("   2. Guárdalo en la misma carpeta que este script")
-        print("   3. Ejecuta nuevamente: python main.py")
+        print("💡 Instructions:")
+        print("   1. Create a .txt or .csv file containing your words")
+        print("   2. Save it next to this script and run: python main.py")
+        print("      or pass it directly: python main.py /path/to/words.csv")
         print()
-        print("📝 Ejemplo de archivo 'mis_palabras.txt':")
+        print("📝 Example (one German word per row):")
         print("   Haus")
         print("   lernen")
         print("   schön")
         sys.exit(0)
 
-    print(f"✅ Se encontraron {len(archivos_txt)} archivo(s) .txt:")
-    for archivo in archivos_txt:
-        print(f"   • {archivo.name}")
+    print(f"✅ Found {len(input_files)} input file(s):")
+    for input_file in input_files:
+        print(f"   • {input_file.name}")
     print()
 
-    # Procesar cada archivo
-    exitosos = 0
-    fallidos = 0
-    
-    for archivo in archivos_txt:
-        if procesar_archivo(archivo):
-            exitosos += 1
+    successful_files = 0
+    failed_files = 0
+
+    for input_file in input_files:
+        if process_input_file(input_file):
+            successful_files += 1
         else:
-            fallidos += 1
- 
-    print("\n" + "=" * 70)
-    print("📊 RESUMEN FINAL")
-    print("=" * 70)
-    print(f"✅ Archivos procesados exitosamente: {exitosos}")
-    if fallidos > 0:
-        print(f"❌ Archivos con errores: {fallidos}")
-    print()
-    
-    if exitosos > 0:
-        print("📱 Próximos pasos:")
-        print("   1. Abre Anki")
-        print("   2. Ve a 'Archivo' → 'Importar'")
-        print("   3. Selecciona los archivos .apkg generados")
-        print("   4. ¡Empieza a estudiar!")
+            failed_files += 1
 
     print("\n" + "=" * 70)
+    print("📊 FINAL SUMMARY")
+    print("=" * 70)
+    print(f"✅ Successfully processed files: {successful_files}")
+    if failed_files > 0:
+        print(f"❌ Files with errors: {failed_files}")
+    print()
+
+    if successful_files > 0:
+        print("📱 Next steps:")
+        print("   1. Open Anki")
+        print("   2. Go to 'File' → 'Import'")
+        print("   3. Select the generated .apkg files")
+        print("   4. Start studying!")
+
+    print("\n" + "=" * 70)
+
 
 if __name__ == "__main__":
     main()

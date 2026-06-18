@@ -5,6 +5,8 @@
 
 # Datos y resultados privados
 /*.txt
+!/requirements.txt
+/*.csv
 *.apkg
 *.anki2
 *.anki21
