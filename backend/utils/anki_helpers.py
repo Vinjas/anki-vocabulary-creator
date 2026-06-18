@@ -76,4 +76,4 @@ def write_anki_package(deck, file_name="german_vocabulary.apkg"):
     """Write an Anki deck to an .apkg file."""
     package = genanki.Package(deck)
     package.write_to_file(file_name)
-    print(f"\n✅ Deck created successfully: {file_name}")
+    print(f"\nDeck created successfully: {file_name}")

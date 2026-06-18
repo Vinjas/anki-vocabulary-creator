@@ -24,13 +24,21 @@ def read_words_from_file(file_path):
 
 def find_input_files():
     """Find TXT and CSV input files in the current directory."""
+    excluded_files = {
+        "instructions.txt",
+        "leeme.txt",
+        "readme.txt",
+        "requirements.txt",
+    }
     files = [
         file
         for file in Path(".").iterdir()
-        if file.is_file() and file.suffix.lower() in SUPPORTED_EXTENSIONS
+        if (
+            file.is_file()
+            and file.suffix.lower() in SUPPORTED_EXTENSIONS
+            and file.name.lower() not in excluded_files
+        )
     ]
-    excluded_files = {"readme.txt", "leeme.txt", "instructions.txt"}
-    files = [file for file in files if file.name.lower() not in excluded_files]
     return sorted(files, key=lambda file: file.name.lower())
 
 

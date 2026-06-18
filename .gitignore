@@ -1,12 +1,12 @@
 # Credenciales
-.env
+backend/.env
 .env.*
 !.env.example
 
 # Datos y resultados privados
-/*.txt
-!/requirements.txt
-/*.csv
+*.txt
+!backend/requirements.txt
+*.csv
 *.apkg
 *.anki2
 *.anki21
@@ -26,3 +26,5 @@ __pycache__/
 .idea/
 .vscode/
 .DS_Store
+frontend/node_modules/
+frontend/dist/

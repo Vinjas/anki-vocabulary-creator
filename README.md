@@ -1,55 +1,75 @@
 # Anki Vocabulary Creator
 
-Create bidirectional German-Spanish Anki decks from TXT or CSV word lists.
+Aplicación web responsive para convertir listas TXT o CSV de vocabulario
+alemán en barajas bidireccionales de Anki.
 
-## Requirements
+## Estructura
 
-- Python 3.10 or newer
-- A Gemini API key
+- `backend/`: API FastAPI y generador de barajas.
+- `frontend/`: interfaz React + TypeScript + Vite.
 
-## Setup
+## Puesta en marcha
+
+La forma más sencilla desde la raíz del proyecto:
+
+```powershell
+.\start.ps1
+```
+
+Después abre `http://localhost:8000`.
+
+### Backend
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
+cd backend
+python -m venv .venv
+.venv\Scripts\activate
 pip install -r requirements.txt
-cp .env.example .env
+copy .env.example .env
+uvicorn app:app --reload
 ```
 
-Add your Gemini API key to `.env`:
+Configura `GEMINI_API_KEY` en `backend/.env`.
 
-```dotenv
-GEMINI_API_KEY=your_api_key
-```
-
-The `.env` file is ignored by Git and must never be committed.
-
-## Usage
-
-Process every `.txt` and `.csv` file in the project root:
+### Frontend
 
 ```bash
-python main.py
+cd frontend
+npm install
+npm run dev
 ```
 
-Process a specific file without copying it into the repository:
+Abre `http://localhost:5173`. Vite enviará las peticiones `/api` al backend
+en `http://localhost:8000`.
+
+## Usarlo desde el móvil
+
+Compila el frontend una vez y sirve toda la aplicación desde FastAPI:
 
 ```bash
-python main.py /path/to/words.csv
+cd frontend
+npm install
+npm run build
+cd ../backend
+uvicorn app:app --host 0.0.0.0 --port 8000
 ```
 
-TXT files should contain one German word per line. CSV files may contain one
-word per row or a named word column such as `german`, `deutsch`, `word`, or
-`term`.
+Con el móvil y el ordenador en la misma red Wi-Fi, abre en el móvil
+`http://IP-DE-TU-ORDENADOR:8000`. Al terminar una baraja, el botón **Guardar
+baraja** abrirá el menú nativo de compartir/guardar cuando el navegador lo
+permita; si no, descargará el archivo en la carpeta de descargas.
 
-## Privacy
+## Formato de entrada
 
-Input `.txt` and `.csv` files, `.env` files, virtual environments, logs, and
-generated Anki packages are ignored by Git. The script also avoids printing
-individual vocabulary entries while processing Gemini batches.
+Los TXT deben contener una palabra alemana por línea. Los CSV pueden contener
+una palabra por fila o una columna llamada `german`, `deutsch`, `word`, `term`,
+`alemán` o `palabra`.
 
-## Tests
+## CLI y tests
+
+El flujo anterior sigue disponible desde `backend/`:
 
 ```bash
+python main.py ruta/a/palabras.csv
 python -m unittest discover -s tests -v
 ```
